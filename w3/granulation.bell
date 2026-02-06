@@ -1,0 +1,39 @@
+#(
+    singing.wav: woman singing recording
+    badinerie.wav: recording of bach's badinerie
+    drums.wav: drum beat loop
+    poem.wav: woman reciting a poem
+    trumpet.wav: jazz trumpet playing
+)#
+## import audio file as buffer
+$buf = importaudio('badinerie.wav');
+$bufdur = getkey($buf, 'duration');
+$onset = 0;
+$intervals = 0 400 700;
+for $i in 1...100 do (
+    ## set grain parameters
+    $graindur = rand(80, 200);
+    $maxoffset = $bufdur - $graindur;
+    $grainoffset = rand(0, $maxoffset);
+    ## $grainoffset = 3000;
+    ## store copy of buffer into grain variable
+    $grain = $buf;
+    ## update grain by changing duration
+    $grain = $grain.setkey('duration', $graindur);
+    ## update grain by changing offset time
+    $grain = $grain.setkey('offset', $grainoffset);
+    $interval = choose($intervals);
+    $grain = $grain.process(window());
+    ## transcribe grain
+    $grain.transcribe(
+        @onset $onset
+        @detune $interval
+        @gain rand(0.5, 1) 
+        @pan rand() 
+    );
+    $onset += rand(30, 80) 
+);
+## render transcribed grains
+render(
+    @play 1 @process normalize(-3) 
+)

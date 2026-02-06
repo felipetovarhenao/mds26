@@ -1,0 +1,8 @@
+for $i in 1...10 do (
+    $buf = cycle();
+    ## $buf = $buf.process(
+    ##     overdrive(@factor 200)
+    ## );
+    $buf.transcribe(($i - 1) * 1000 @gain 0.1) 
+);
+render(@play 1 @process overdrive(@factor 200))

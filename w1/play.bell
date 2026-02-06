@@ -1,0 +1,1 @@
+cycle(@frequency 2000/2.95 @duration 1000).process(format(@sr 2000)).view()

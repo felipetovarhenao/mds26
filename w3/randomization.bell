@@ -1,0 +1,25 @@
+#( 
+- random(min, max): generates random integers
+- rand(min, max): generates random floating point number
+- scramble(): shuffles elements of a list and return a new list
+- choose(): pick one element from a list at random
+)#
+$onset = 0;
+$totdur = 5000;
+$pitches = c5 eb5 f5 g5 bb5;
+$unit = 150;
+while $onset < $totdur do (
+    $incr = $unit * random(1, 4);
+    $dur = $incr;
+    $octave = random(-1, 1) * 1200;
+    $pitch = choose($pitches) + $octave;
+    $buf = ezsampler(@pitch $pitch @duration $dur);
+    $gain = rand(0.25, 1);
+    $buf.transcribe(
+        @onset $onset @gain $gain
+    );
+    $onset += $incr
+);
+render(
+    @play 1 @process normalize(-3) freeverb(@roomsize 0.9) 
+)

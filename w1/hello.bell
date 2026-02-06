@@ -1,0 +1,3 @@
+$buffer = cycle(600, 1000); ## generate buffer
+transcribe($buffer); ## transcribe buffer
+render(@play 1)

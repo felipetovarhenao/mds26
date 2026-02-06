@@ -1,0 +1,7 @@
+$pitches = c5 e5 g5 b5;
+for $pitch $index in $pitches do (
+    $onset = ($index - 1) * 200;
+    $buf = ezsampler(@pitch $pitch);
+    $buf.transcribe(@onset $onset)
+);
+render(@play 1)

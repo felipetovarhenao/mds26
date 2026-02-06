@@ -1,0 +1,6 @@
+#( 
+random(min, max): generates random integers
+rand(min, max): generates random floating point number
+scramble(): shuffles elements of a list and return a new list
+choose(): pick one element from a list at random
+)#

@@ -1,0 +1,17 @@
+$motif = c5 g5 a5 g5 f5 e5 d5 c5;
+$pitches = $motif :* 2;
+$pitches _= $pitches:[4...7] :* 2;
+$pitches _= $pitches:[1...8];
+$onset = 0;
+for $pitch $index in $pitches do (
+    $index -= 1;
+    $index = $index % 4;
+    $repeats = if $index == 3 then 1 else 2;
+    for $i in 1...$repeats do (
+        $duration = 500 / $repeats;
+        $buf = ezsampler(@pitch $pitch @duration $duration);
+        $buf.transcribe($onset);
+        $onset += $duration
+    ) 
+);
+render(@play 1)

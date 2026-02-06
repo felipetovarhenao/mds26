@@ -1,0 +1,8 @@
+$nums = 0 100 100 0;
+$x = arithmser(0, 1.0, null, 200);
+print($x);
+$y = samplelist($nums, $x);
+for $xval in $x, $yval in $y do (
+    print('when x is' $xval 'y is' $yval)
+);
+envelope($y).view()

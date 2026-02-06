@@ -1,0 +1,12 @@
+## break-point functions
+#( 
+    [x1 y1 slope1]
+    ...
+    [xN yN slopeN]
+)#
+$bpf = [0 0 0] [0.5 1 0.5] [1 0 0];
+$x = arithmser(0, 1.0, null, 11);
+$y = samplebpf($bpf, $x);
+for $xval in $x, $yval in $y do (
+    print('x:' $xval 'y:' $yval)
+)

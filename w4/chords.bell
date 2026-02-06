@@ -1,0 +1,7 @@
+$pitchlist = c5 g5;
+$onset = 0;
+for $pitch in $pitchlist do (
+    ezsampler(@pitch $pitch).transcribe($onset);
+    $onset += 100
+);
+render(@play 1)

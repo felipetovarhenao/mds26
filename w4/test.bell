@@ -1,0 +1,2 @@
+importaudio('singing.wav').transcribe();
+render(@play 1)

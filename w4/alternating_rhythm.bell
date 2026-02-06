@@ -1,0 +1,10 @@
+$onset = 0;
+$durs = 200 400 600 150;
+for $i in 1...8 do (
+    $buf = ezsampler();
+    $buf.transcribe($onset);
+    $address = (($i - 1) % length($durs)) + 1;
+    $dur = $durs:$address;
+    $onset += $dur
+);
+render(@play 1)

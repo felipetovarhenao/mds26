@@ -1,0 +1,11 @@
+$events = importmidi('joplin.mid');
+for $event in $events.left(64) do (
+    $pitch = getkey($event, 'pitch');
+    $onset = getkey($event, 'onset');
+    $duration = getkey($event, 'duration');
+    $pitchclass = ($pitch % 1200) / 100;
+    $pitchclass = mc2pc($pitch);
+    if $pitchclass == 4 || $pitchclass == 9 || $pitchclass == 11 then $pitch -= 100;
+    ezsampler(@pitch $pitch @duration $duration).transcribe($onset) 
+);
+render(@play 1)

@@ -1,0 +1,5 @@
+$nums = 0...99;
+$numbeats = 8;
+for $num in $nums do (
+    print('when $num is' $num 'beat position is' $num % $numbeats)
+)

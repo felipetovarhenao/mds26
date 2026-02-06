@@ -1,0 +1,5 @@
+ezsampler(@duration 4000).transcribe(
+    @gain [0 0 0] [0.01 1 0.125] [1 0 -0.5]
+    @pan [0 0 0] [1 1 0]
+);
+render(@play 1)

@@ -1,0 +1,9 @@
+$pitchbpf = [0 4800 0] [1 7200 -0.25];
+$x = arithmser(0, 1, null, 50);
+$onset = 0;
+for $pt in $x do (
+    $pitch = samplebpf($pitchbpf, $pt);
+    ezsampler(@pitch $pitch).transcribe($onset);
+    $onset += 100
+);
+render(@play 1)

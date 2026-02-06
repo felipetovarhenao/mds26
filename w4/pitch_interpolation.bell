@@ -1,0 +1,6 @@
+$pitch1 = 4800;
+$pitch2 = 7200;
+## $bpf = [0 0 0] [1 1 0];
+$mix = 0.75;
+$pitch = (1 - $mix) * $pitch1 + $mix * $pitch2;
+print($pitch)

@@ -1,0 +1,12 @@
+$scale = d5 e5 f5 g5 a5 b5 c6;
+$octaves = -1200 0 1200;
+$onset = 0;
+$melsize = 16;
+for $i in 1...$melsize do (
+    $pitch = choose($scale);
+    $octave = choose($octaves);
+    $buf = ezsampler($pitch + $octave);
+    $buf.transcribe($onset);
+    $onset += 200
+);
+render(@play 1)

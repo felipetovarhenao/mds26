@@ -1,0 +1,12 @@
+$intervals = 200 -200 100 -100 400 -400;
+$melsize = 16;
+$pitch = g5;
+$onset = 0;
+for $i in 1...$melsize do (
+    $interval = choose($intervals);
+    $pitch += $interval;
+    $buf = ezsampler($pitch);
+    $buf.transcribe($onset);
+    $onset += 200
+);
+render(@play 1)

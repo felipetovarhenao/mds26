@@ -1,0 +1,34 @@
+$bpm = 60;
+$chords = (
+    [
+        ['root' C5] ['type' 'M'] ['duration' 1/4] 
+    ] [
+        ['root' F5] ['type' 'M'] ['duration' 1/4] 
+    ] 
+);
+$wholedur = 240000 / $bpm;
+$onset = 0;
+for $chord in $chords do (
+    $root = getkey($chord, 'root');
+    $type = getkey($chord, 'type');
+    $reldur = getkey($chord, 'duration');
+    $absdur = $reldur * $wholedur;
+    $intervals = if $type == 'M' then (
+        ## 
+        ## chord is major
+        0 400 700
+    ) else (
+        ## 
+        ## chord is minor
+        0 300 700
+    );
+    $chord = $root + $intervals;
+    for $pitch in $chord do (
+        ## create a buffer
+        $buf = ezsampler(@pitch $pitch);
+        ## transcribe
+        $buf.transcribe(@onset $onset) 
+    );
+    $onset += $absdur
+)
+render(@play 1)

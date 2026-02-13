@@ -1,0 +1,43 @@
+#(
+LINE 1: Create a breakpoint function (BPF) that controls 
+the dynamic envelope across the five-bar musical excerpt by mapping 
+normalized time positions (0 to 1) to gain values (0 to 1). 
+Using the provided score, identify the dynamic markings and their 
+temporal locations. Break-point functions follow this syntax:
+
+[x1 y1 slope1] ... [xN yN slopeN]
+
+LINE 2: Sample from this bpf to define the gain for each event.
+
+In short, the BPF in Block 1 should reflect the score's dynamic 
+contour, and Block 2 applies this envelope by sampling the BPF 
+at each note's relative position in the piece to determine its gain.
+
+
+)#
+scoreconfig(@showdynamics 1);
+$events = importmidi('./music.mid');
+$bardur = 2666.6;
+## ----- LINE 1 START HERE 👇🏽 ----- 
+$bpf = [0 0 0] [3/5 1 0] [1 0 0];
+## ----- STOP AND CONTINUE TO LINE 2 🛑 ----- 
+for $marker $markerid in arithmser(0, null, $bardur, 6) do addmarker($marker, $markerid @role 'barline');
+$totaldur = $bardur * 6;
+for $event in $events do (
+    $pitch = getkey($event, 'pitch');
+    $onset = getkey($event, 'onset');
+    $dur = getkey($event, 'duration');
+    $buf = ezsampler(@pitch $pitch @duration $dur * 2);
+    $x = $onset / $totaldur;
+    ## ----- LINE 2 STARTS HERE -----  👇🏽
+    $gain = samplebpf($bpf, $x);
+    ## ----- END HERE -----  🛑
+    transcribe(
+        @buffer $buf
+        @onset $onset
+        @gain $gain
+    ) 
+);
+render(
+    @play 1 @process freeverb(@roomsize 0.9)
+)

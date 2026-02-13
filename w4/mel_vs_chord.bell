@@ -1,0 +1,11 @@
+$chord = (
+    c5 e5 g5 c6 
+);
+$onset = 0;
+for $i in 1...4 do (
+    for $pitch in $chord do (
+        ezsampler($pitch).transcribe($onset) 
+    );
+    $onset += 1000
+);
+render(@play 1)

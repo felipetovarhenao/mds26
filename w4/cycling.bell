@@ -1,0 +1,8 @@
+$days = 'monday' 'tuesday' 'wednesday' 'thursday' 'friday' 'saturday' 'sunday';
+$numdays = 30;
+print('hi');
+for $monthday in 1...$numdays do (
+    $weekday = (($monthday - 1) % length($days)) + 1;
+    $dayname = $days:$weekday;
+    print($monthday '->' $weekday $dayname)
+)

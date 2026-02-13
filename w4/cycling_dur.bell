@@ -1,0 +1,10 @@
+$rhythm = 400 200 100 200 300;
+$numbeats = 40;
+$onset = 0;
+for $i in 1...$numbeats do (
+    $durid = (($i - 1) % length($rhythm)) + 1;
+    $step = $rhythm:$durid;
+    ezsampler().transcribe($onset);
+    $onset += $step
+);
+render(@play 1)

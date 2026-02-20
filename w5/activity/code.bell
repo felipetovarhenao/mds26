@@ -1,0 +1,42 @@
+#(
+    STEP 1: Import the `./swan.mid` MIDI melody, using the `importmidi` function
+)#
+
+#(
+    STEP 2: Iterate through each event to extract the following information, using the `getkey` function:
+
+        a) event's pitch via the "pitch" key
+        b) event's onset via the "onset" key
+        
+    Store each type of information in two separate variables, creating a list of pitches and a list of onset times.
+)#
+
+#(
+    STEP 3: Use the list of pitches and onsets to create two new lists with the following information:
+        
+        a) pitches -> pitch intervals (pitch distance between consecutive pitches)
+        b) onsets -> inter-onset intervals (time distance between consecutive onsets)
+        
+    TIP: Use `x2dx` function, which takes a numeric lists and returns distances between consecutive elements.
+)#
+
+#( 
+    STEP 4: The use resulting data to generate a stochastic melody, using a `for` loop. On each iteration:
+    
+        a) The pitch should be updated by adding a randomly chosen pitch interval
+        b) The onset should be updated by adding a randomly chosen time interval
+)#
+## melody size
+$size = 17;
+## initial onset and pitch
+$onset = 0;
+$pitch = g5;
+for $i in 1...$size do (
+    ## STEP 4 starts here 👇🏽
+    
+    ## STEP 4 ends here 🛑
+    
+);
+null
+## 👇🏽 uncomment the line below once you have transcribed buffers
+## render(@play 1)

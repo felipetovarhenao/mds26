@@ -1,11 +1,14 @@
 ## define a custom scale
 $scale = sort(
-    e5 f#5 g#5 a5 b5 c#6 d#6
+    e5 f#5 g#5 a5 b5 c#6 d#6 
 );
 ## expand scale to multiple octaves
 $scale = for $octave in (-1200 0 1200) collect $scale + $octave;
 ## get scale size
 $scalesize = length($scale);
+## possible rhythmic values
+$timesteps = 1/2 1/8 3/8 1/4;
+$timesteps *= 2000;
 ## specify initial scale degree
 $degree = 5;
 ## possible degree steps 
@@ -17,7 +20,8 @@ for $i in 1...$melsize do (
     $pitch = $scale:$degree;
     $buf = ezsampler($pitch);
     $buf.transcribe($onset);
-    $onset += 200;
+    $timestep = choose($timesteps);
+    $onset += $timestep;
     ## choose scale degree step at random
     $step = choose($steps);
     ## update scale degree

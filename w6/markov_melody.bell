@@ -1,0 +1,20 @@
+## STEP 1: IMPORT RAW DATA
+$midi = importmidi('./media/entertainer.mid');
+## STEP 2: PRE-PROCESS RAW DATA
+$pitches = for $event in $midi collect getkey($event, 'pitch');
+## STEP 3: TRAIN THE MARKOV MODEL
+$order = 3;
+$model = seq2markov(
+    pitch($pitches) @order $order
+);
+## STEP 4: GENERATE NEW SEQUENCE
+$numpitches = 100;
+$melody = markov2seq(@matrix $model @maxlength $numpitches);
+## STEP 5: POST-PROCESS NEW SEQUENCE
+$onset = 0;
+for $pitch in $melody do (
+    $buf = ezsampler($pitch);
+    $buf.transcribe($onset);
+    $onset += 150
+);
+render(@play 1)

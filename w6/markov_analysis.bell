@@ -1,0 +1,27 @@
+## STEP 1: IMPORT RAW DATA
+$ent = importmidi('./media/entertainer.mid');
+## STEP 2: PRE-PROCESS RAW DATA
+$pairs = group($ent, 2, 1);
+$seq = for $pair in $pairs with @unwrap 1 collect (
+    ## unpack event pair
+    ## current event
+    $present = $pair:1;
+    ## next one
+    $next = $pair:2;
+    ## get pitch for current event
+    $pitch = getkey($present, 'pitch');
+    ## get onsets for each event
+    $onset1 = getkey($present, 'onset');
+    $onset2 = getkey($next, 'onset');
+    ## compute ioi
+    $ioi = $onset2 - $onset1;
+    ## define token as pitch-ioi pair
+    $token = [pitch($pitch) $ioi];
+    ## collect token
+    $token
+);
+## STEP 3: TRAIN THE MODEL
+$order = 3;
+$model = seq2markov(@sequence $seq @order $order);
+write($model, './markov_model.txt');
+print("DONE")

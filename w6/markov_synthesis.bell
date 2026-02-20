@@ -1,0 +1,16 @@
+$model = read('./markov_model.txt');
+## STEP 4: GENERATE NEW DATA/SEQUENCE
+$numnotes = 300;
+$tokens = markov2seq(@matrix $model @maxlength $numnotes);
+## STEP 5: POST-PROCESS
+$onset = 0;
+for $token in $tokens with @unwrap 1 do (
+    $pitch = $token:1;
+    $ioi = $token:2;
+    $buf = ezsampler($pitch @duration 500);
+    $buf.transcribe(
+        $onset @gain [0 1 0] [1 0 0.5]
+    );
+    $onset += $ioi
+);
+render(@play 1)

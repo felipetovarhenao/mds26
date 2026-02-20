@@ -1,0 +1,19 @@
+## STEP 1: RAW DATA
+$text = 'hello ';
+$text = 'mississippi ';
+$text = read('./media/tongue_twisters.txt');
+## STEP 2: DATA PRE-PROCESSING
+$textsize = symlen($text);
+$seq = for $i in 1...$textsize collect getchar($text, $i);
+## STEP 3: TRAINING
+$order = 4;
+$matrix = seq2markov($seq, $order);
+## STEP 4: GENERATION (INFERENCE)
+$newseq = markov2seq(
+    @matrix $matrix
+    @maxlength 100
+    @start '^' 
+);
+## STEP 5: POST-PROCESSING
+$newtext = reduce($newseq, #+);
+print($newtext)

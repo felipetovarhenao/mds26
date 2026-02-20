@@ -1,7 +1,7 @@
 #(
     STEP 1: Import the `./swan.mid` MIDI melody, using the `importmidi` function
 )#
-
+$events = importmidi('./swan.mid');
 #(
     STEP 2: Iterate through each event to extract the following information, using the `getkey` function:
 
@@ -10,7 +10,14 @@
         
     Store each type of information in two separate variables, creating a list of pitches and a list of onset times.
 )#
-
+$pitches = null;
+$onsets = null;
+for $event in $events do (
+    $pitch = getkey($event, 'pitch');
+    $onset = getkey($event, 'onset');
+    $pitches _= $pitch;
+    $onsets _= $onset
+);
 #(
     STEP 3: Use the list of pitches and onsets to create two new lists with the following information:
         
@@ -19,7 +26,8 @@
         
     TIP: Use `x2dx` function, which takes a numeric lists and returns distances between consecutive elements.
 )#
-
+$intervals = x2dx($pitches);
+$iois = x2dx($onsets);
 #( 
     STEP 4: The use resulting data to generate a stochastic melody, using a `for` loop. On each iteration:
     
@@ -33,10 +41,16 @@ $onset = 0;
 $pitch = g5;
 for $i in 1...$size do (
     ## STEP 4 starts here 👇🏽
-    
+    $buf = ezsampler($pitch);
+    $buf.transcribe($onset);
+    $interval = choose($intervals);
+    $timestep = choose($iois);
+    print(pitch($pitch) $onset);
+    $pitch += $interval;
+    $onset += $timestep
     ## STEP 4 ends here 🛑
     
 );
 null
 ## 👇🏽 uncomment the line below once you have transcribed buffers
-## render(@play 1)
+render(@play 1)

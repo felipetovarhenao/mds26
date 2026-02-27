@@ -1,0 +1,20 @@
+$keymap = read('./keymap.txt');
+$events = importmidi('bach.mid').left(300);
+for $event in $events do (
+    $pitch = getkey($event, 'pitch');
+    $onset = getkey($event, 'onset');
+    $dur = getkey($event, 'duration');
+    $buf = ezsampler(
+        @pitch $pitch
+        @duration $dur
+        @keymap $keymap
+    );
+    $buf.transcribe(
+        @onset $onset
+        @pan rand(0, 1) 
+        @gain [0 1 0] [1 0 0.5] 
+    ) 
+);
+render(
+    @play 1 @process normalize(-7) freeverb(@roomsize 0.9 @wet 0.025) 
+)

@@ -1,0 +1,19 @@
+$keymap = (
+    [
+        c5 [10 './splice_sounds/C5-v2.wav'] [90 './splice_sounds/C5.wav'] 
+    ] 
+    ## ---
+    [f#5 './splice_sounds/F#5.wav'] [c7 './splice_sounds/C7.wav'] 
+);
+$onset = 0;
+for $i in 1...16 do (
+    $vel = random(1, 127);
+    $pitch = f2mc(55 * $i);
+    ezsampler(
+        @pitch $pitch
+        @velocity $vel
+        @keymap $keymap
+    ).transcribe($onset);
+    $onset += 400
+);
+render(@play 1)

@@ -1,0 +1,50 @@
+#( 
+    1. Import sound
+    2. Slice it into segments based on onsets/transients
+    3. for each sound, detect pitch
+    4. check if pitch confidence is high enough
+    5. if so, render and export segment as a file and add pitch/file entry to keymap
+    6. save the keymap to memory
+)#
+## step 1
+$buf = importaudio('trumpet.wav');
+## step 2
+$analysis = onsets();
+$buf = analyze($buf, $analysis);
+$splitpoints = getkey($buf, 'onsets');
+$segments = splitbuf(
+    @buffer $buf
+    @split $splitpoints
+    @mode 2
+);
+$pitchanalysis = pitchmelodia();
+$confthreshold = 0.05;
+$index = 1;
+$keymap = null;
+for $seg in $segments do (
+    $seg = analyze($seg, $pitchanalysis);
+    ## step 4
+    $conf = getkey($seg, 'pitchmelodia_confidence');
+    if $conf > $confthreshold then (
+        ## get detected pitch
+        $pitch = getkey($seg, 'pitchmelodia');
+        ## round pitch to nearest semitone
+        $pitch = pitch(round($pitch / 100) * 100);
+        ## create custom path for current segment
+        $path = './samples/' + tosymbol($index) + '.wav';
+        ## add pitch entry in keymap if it doesn't already exist
+        if $keymap.$pitch == null then ($keymap _= [$pitch] );
+        ## add path to corresponding pitch
+        $keymap.$pitch _= $path;
+        ## step 5
+        ## transcribe segment, render, and export
+        $seg.transcribe();
+        render(@reset 1);
+        print($path);
+        export($path);
+        ## increase index for next segment
+        $index += 1
+    ) 
+);
+## step 3
+write($keymap, './keymap.txt')

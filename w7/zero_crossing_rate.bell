@@ -1,0 +1,12 @@
+$buf = importaudio('poem.wav');
+$segs = splitbuf($buf @split 100);
+$analysis = zerocrossingrate();
+$segs = for $seg in $segs collect analyze($seg, $analysis);
+print($segs, 'before');
+$sortedsegs = sortbykeys($segs, 'zerocrossingrate');
+$t = 0;
+for $seg in $sortedsegs do (
+    $seg.transcribe($t);
+    $t += 100
+);
+render(@play 1)

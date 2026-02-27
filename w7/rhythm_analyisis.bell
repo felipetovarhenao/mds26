@@ -1,0 +1,12 @@
+## import audio file as buffer
+$buf = importaudio('badinerie.wav');
+$buf = process($buf, format(44100));
+$analysis = rhythm();
+$buf = analyze($buf, $analysis);
+view($buf);
+$ticks = getkey($buf, 'rhythm_ticks');
+print($ticks);
+$click = cycle();
+for $tick in $ticks do ($click.transcribe($tick));
+$buf.transcribe();
+render(@play 1)

@@ -1,0 +1,17 @@
+## import audio file as buffer
+$buf = importaudio('badinerie.wav');
+$buf = process($buf, format(44100));
+$analysis = rhythm();
+$buf = analyze($buf, $analysis);
+$ticks = getkey($buf, 'rhythm_ticks');
+$chunks = splitbuf($buf, $ticks @mode 2);
+$onset = 0;
+for $chunk in scramble($chunks) do (
+    $duration = getkey($chunk, 'duration');
+    $chunk.transcribe(
+        @onset $onset 
+        @gain [0 1 0] [1 0 -0.15] 
+    );
+    $onset += $duration * 0.2
+);
+render(@play 1)

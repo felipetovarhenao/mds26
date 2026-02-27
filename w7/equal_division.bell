@@ -1,0 +1,13 @@
+$oct = 1200;
+$onset = 0;
+for $div in 2...12 do (
+    $pitch = c5;
+    $step = float($oct / $div);
+    for $times in 1...($div + 1) do (
+        $buf = ezsampler($pitch);
+        $buf.transcribe($onset);
+        $onset += 200;
+        $pitch += $step
+    ) 
+);
+render(@play 1)

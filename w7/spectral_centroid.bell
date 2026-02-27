@@ -1,0 +1,21 @@
+#( 
+    1. saw
+    2. rect
+    3. tri
+    4. cycle
+)#
+$waves = cycle tri rect saw;
+$analysis = spectralcentroid();
+$onset = 0;
+$dur = 2000;
+for $wave in $waves do (
+    $buf = $wave(@duration $dur);
+    $buf = analyze($buf, $analysis);
+    $centroid = getkey($buf, 'spectralcentroid');
+    print($centroid);
+    $buf.transcribe($onset);
+    $onset += $dur
+);
+render(
+    @play 1 @process normalize(-12) 
+)

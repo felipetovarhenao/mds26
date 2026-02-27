@@ -1,0 +1,9 @@
+$buf = importaudio('viola.wav');
+view($buf, 'before analysis');
+$analysis = pitchmelodia() zerocrossingrate() spectralcentroid();
+$buf = analyze($buf, $analysis);
+view($buf, 'after analysis');
+$buf.transcribe();
+$pitch = getkey($buf, 'pitchmelodia');
+ezsampler($pitch).transcribe();
+render(@play 1)

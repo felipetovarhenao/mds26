@@ -1,0 +1,11 @@
+$buf = importaudio('poem.wav');
+$analysis = onsets(@alpha 0.7 @silencethreshold 0.07);
+$buf = analyze($buf, $analysis);
+$markers = getkey($buf, 'onsets');
+$click = cycle();
+for $marker in $markers do (
+    addmarker($marker);
+    $click.transcribe($marker) 
+);
+$buf.transcribe();
+render(@play 1)

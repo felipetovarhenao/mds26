@@ -1,0 +1,23 @@
+## 1. import some audio file
+$buf = importaudio('trumpet.wav');
+## 2. segment buffer
+$segs = splitbuf($buf);
+## 3. define descriptors
+$desc = (
+    ## pitch detection analysis (mono)
+    pitchmelodia() 
+    ## number of zero crossing in audio (i.e., how noisy/percussive it is)
+    zerocrossingrate() 
+    ## indicator of how bright a sound is
+    spectralcentroid() 
+);
+## 4. analyze each segment using descriptors
+$segs = for $seg in $segs collect analyze($seg, $desc);
+## 5. convert segments into a database table (audio corpus)
+dbtable($segs) 
+## 6. visualize database table
+browsedbtable(
+    @xfield 'pitchmelodia' 
+    @yfield 'zerocrossingrate' 
+    @sizefield 'spectralcentroid' 
+)

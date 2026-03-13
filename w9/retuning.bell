@@ -1,0 +1,27 @@
+## step 1: loading input sound
+$buf = importaudio('singing.wav');
+## step 2: segmenting buffer into grains (i.e., very short buffers)
+$split = 200;
+$overlap = 2;
+$segs = splitbuf($buf, $split @overlap $overlap);
+$targetpitch = 0 3 6 9;
+$onset = 0;
+## step 3: for each grain, detect pitch
+for $seg in $segs do (
+    $seg = analyze($seg, pitchmelodia());
+    ## detected pitch in grain
+    $pitch = getkey($seg, 'pitchmelodia');
+    ## step 4: use detected pitch, to retune grain to match target pitch
+    $interval = pitchdiff($pitch, $targetpitch);
+    ## step 5: modify grain to match pitch, using interval
+    $seg.transcribe(
+        @onset $onset
+        @detune $interval
+        @pitchkey 'pitchmelodia' 
+        @gain [0 0 0] [0.5 1 -0.25] [1 0 0.25] 
+    );
+    $onset += $split / $overlap
+);
+render(
+    @play 1 @process normalize(-6) 
+)

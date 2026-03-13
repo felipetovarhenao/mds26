@@ -1,0 +1,31 @@
+## number of audio files per folder
+$datasize = 100;
+## get list of files in male folder
+$malefolder = readfolder('/Users/felipetovarhenao/Documents/datasets/AudioMNIST/01');
+## shuffle folder and get $datasize number of files
+$malefolder = left(scramble($malefolder), $datasize);
+## get list of files in female folder
+$femfolder = readfolder('/Users/felipetovarhenao/Documents/datasets/AudioMNIST/12');
+## shuffle folder and get $datasize number of files
+$femfolder = left(scramble($femfolder), $datasize);
+## define audio descriptors
+$desc = strongpeak() flux() larm();
+## automatically get name of resulting key for each of the descriptors
+$key1 = getkey($desc:1, 'output');
+$key2 = getkey($desc:2, 'output');
+## iterate through each list of files, with corresponding label
+$bufs = for $files in [$malefolder] [$femfolder], $label in 0 1 with @unwrap 1 collect (
+    for $file in $files collect (
+        $buf = importaudio($file);
+        $buf = analyze($buf, $desc);
+        $buf = setkey(
+            $buf, 'gender', $label @mode 1
+        ) 
+    ) 
+);
+dbtable($bufs);
+browsedbtable(
+    @xfield $key1
+    @yfield $key2
+    @colorfield 'gender'
+)

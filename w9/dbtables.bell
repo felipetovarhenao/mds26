@@ -1,0 +1,12 @@
+$points = for $i in 1...500 collect [
+    ['x' rand(-1, 1)] ['size' rand(3, 10)] ['color' rand(0, 40)] ['y' rand(-1, 1)] 
+];
+## creating database table based on points, and calling the table "points"
+dbtable($points @name 'points');
+## open db table browser for the "points" table, and designate keys for each plotting parameter
+browsedbtable(
+    @name 'points' 
+    @xfield 'x' 
+    @yfield 'y' 
+    @sizefield 'size' 
+)

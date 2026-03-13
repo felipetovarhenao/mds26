@@ -1,0 +1,27 @@
+$tptfiles = readfolder('~/Documents/datasets/TinySOL/Brass/Trumpet_C/ordinario/');
+$vlnfiles = readfolder('~/Documents/datasets/TinySOL/Winds/Clarinet_Bb/ordinario/');
+#(
+This function takes a list of files and a label and loads them
+)#
+$loadfiles = (
+    $files, $label -> (
+        for $file in $files collect (
+            $buf = importaudio($file);
+            $buf = setkey($buf, 'duration', 400);
+            $buf = analyze($buf, larm() spectralcentroid());
+            $buf = setkey(
+                $buf, 'instrument_id', $label @mode 1
+            );
+            view($buf) 
+        ) 
+    ) 
+);
+$bufs = null;
+$bufs _= $loadfiles($tptfiles, 0);
+$bufs _= $loadfiles($vlnfiles, 1);
+dbtable($bufs);
+browsedbtable(
+    @xfield 'larm' 
+    @yfield 'spectralcentroid' 
+    @colorfield 'instrument_id' 
+)

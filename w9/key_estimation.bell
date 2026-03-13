@@ -1,0 +1,52 @@
+## step 1: get list of all MIDI files in folder
+$files = readfolder(
+    './bach_inventions/' @filetype 'midi' 
+);
+## step 2: read metadata
+$meta = read('./bach_inventions/meta.txt');
+$majormask = 1 0 0 0 1 0 0 1 0 0 0 0;
+$minormask = 1 0 0 1 0 0 0 1 0 0 0 0;
+$letters = 'C' 'C#' 'D' 'Eb' 'E' 'F' 'F#' 'G' 'Ab' 'A' 'Bb' 'B';
+$modes = 'M' 'm';
+$keys = null;
+$masks = null;
+for $mode in $modes do (
+    for $letter $i in $letters do (
+        $mask = if $mode == 'M' then $majormask else $minormask;
+        $mask = rot($mask, 1 - $i);
+        $masks _= [$mask];
+        $keys _= $letter + $mode
+    ) 
+);
+$preds = for $file in $files collect (
+    ## parse path into constituent parts
+    $path = parsepath($file);
+    ## get name of file (without ext.)
+    $pathname = getkey($path, 'name');
+    ## get file extension (i.e., .mid or .midi)
+    $pathext = getkey($path, 'extension');
+    ## join filename with extension
+    $filename = $pathname + $pathext;
+    ## use filename to get expected key from metadata
+    $truekey = $meta.$filename;
+    ## load midi events
+    $events = importmidi($file);
+    ## get list of pitches from MIDI events
+    $pitches = for $event in $events collect getkey($event, 'pitch');
+    ## get chroma vector from pitches (number of instances for each pitch class)
+    $chroma = mc2chroma($pitches);
+    ## compute and collect masked score for each potential key
+    $scores = for $mask in $masks with @unwrap 1 collect (
+        $masked = $chroma * $mask;
+        $score = reduce($masked, #+) 
+    );
+    ## get index for best score
+    $bestindex = minmax($scores)::4;
+    ## extract predicted key using index
+    $predkey = $keys:$bestindex;
+    ## check if prediction is correct
+    print($truekey == $predkey, 'Is prediction correct?') 
+);
+print(
+    'Accuracy:' reduce($preds, #+) / length($preds)
+)

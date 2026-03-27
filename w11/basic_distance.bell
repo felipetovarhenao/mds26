@@ -1,0 +1,17 @@
+## pitch we're measuring against others
+## to find most similar to it
+$pitch = f#5;
+## mini dataset of pitches
+$pitches = c5 e5 g5 b5;
+## compute absolute distance (or interval) from all other pitches
+$distance = float($pitches - $pitch);
+## we get absolute distance because we're not interested in interval direction
+$distance = abs($distance);
+## returns min val, min val address, max val, and max val address
+$minmax = minmax($distance);
+## get address of smallest absolute interval
+$index = $minmax:2;
+$closestpitch = $pitches:$index;
+print(
+    $closestpitch, 'The closest pitch to' $pitch 'in' $pitches 'is:'
+)

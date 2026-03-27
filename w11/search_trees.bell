@@ -1,0 +1,23 @@
+## mini dataset of dyads
+$dyads = float(
+    ## M2
+    [c5 d5] 
+    ## P4
+    [c#5 f#5] 
+    ## M3
+    [db5 f5] 
+    ## m3
+    [g5 bb5] 
+);
+## reference dyad
+$ref = float(d5 f5);
+## Dataset object based on dyads (raw data)
+$dataset = dataset($dyads);
+## K-Dimensional tree based on dataset, to improve search
+$tree = kdtree($dataset);
+$result = predict($tree, $ref);
+$index = getkey($result, 'neighbors');
+$closestdyad = pitch($dyads:$index);
+print(
+    $closestdyad, 'The most similar dyad to' pitch($ref) 'is:'
+)

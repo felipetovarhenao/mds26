@@ -1,0 +1,26 @@
+## Reference point: pitch (MIDIcents) and duration (ms)
+$point = 6500 300;
+## Mini-dataset points
+$data = [6300 25] [6800 480] [7500 1000];
+#( 
+    distance between:
+    (6500 300) - (6300 25) = 200 75 = 275
+    (6500 300) - (6800 480) = 300 180 = 480
+ )#
+## create dataset object off of the data
+$dataset = dataset($data);
+## create/build a data search tree off of dataset
+$scaler = normscaler($dataset);
+## apply normalization to dataset based on learned parameters in scaler
+$dataset = transform($scaler, $dataset);
+## apply normalization to point based on learned params in scaler
+$normpoint = transform($scaler, $point);
+## building a tree based on NORMALIZED dataset
+$tree = kdtree($dataset);
+## search for nearest value in normalized tree, using normalized point
+$result = predict($tree, $normpoint);
+$index = getkey($result, 'neighbors');
+$closestnote = $data:$index;
+print(
+    $closestnote, 'The closest note to' $point 'in' $data 'is:'
+)

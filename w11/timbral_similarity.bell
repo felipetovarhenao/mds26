@@ -1,0 +1,40 @@
+#(
+    Given some sound, find the most similar among other sounds
+)#
+## STEP 1: Load sounds as buffers
+$files = 'flute.wav' 'viola.wav' 'guitar.wav';
+$analysis = mfcc();
+## list of all buffers in dataset/corpus
+$bufs = null;
+## list of all data points (MFCC)
+$data = null;
+for $file in $files do (
+    $b = importaudio($file);
+    $b = analyze($b, $analysis);
+    $mfcc = getkey($b, 'mfcc');
+    ## STEP 2: Extract perceptually meaninful data from each sound
+    view($b, $file);
+    $bufs _= $b;
+    $data _= [$mfcc] 
+);
+## STEP 3: Create dataset from extracted data
+$dataset = dataset($data);
+## STEP 4: Normalize dataset
+$scaler = normscaler($dataset);
+## normalize dataset
+$dataset = transform($scaler, $dataset);
+## STEP 5: Create data tree from NORMALIZED dataset
+$tree = kdtree($dataset);
+## STEP 6: Given some sound, get the same meaninful features to create data point
+$pluck = ezsampler(g5);
+$pluck = analyze($pluck, $analysis);
+$mfcc = getkey($pluck, 'mfcc');
+$point = transform($scaler, $mfcc);
+## STEP 7: Search most similar/closest point in dataset
+$result = predict($tree, $point);
+$index = getkey($result, 'neighbors');
+$closestbuf = $bufs:$index;
+## STEP 8: Transcribe and play
+transcribe($pluck);
+transcribe($closestbuf, 2000);
+render(@play 1)

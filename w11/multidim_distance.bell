@@ -1,0 +1,30 @@
+## mini dataset of dyads
+$dyads = (
+    ## M2
+    [c5 d5] 
+    ## P4
+    [c#5 f#5] 
+    ## M3
+    [db5 f5] 
+    ## m3
+    [g5 bb5] 
+);
+## reference dyad
+$ref = d5 f5;
+## iterate through dyads and get pitch difference
+$distances = null;
+for $dyad in $dyads with @unwrap 1 do (
+    $diff = float($dyad - $ref);
+    $diff = abs($diff);
+    $distance = reduce($diff, #+);
+    print(
+        $distance, 'distance betwen' $ref 'and' $dyad 'is:' 
+    );
+    $distances _= $distance
+);
+## get minmax info from distance list
+$minmax = minmax($distances);
+## get position of smallest distance
+$index = $minmax:2;
+$closestdyad = $dyads:$index;
+print($closestdyad, 'The closest dyad to' $ref 'is:')

@@ -1,0 +1,23 @@
+$mlp = readobject('./objects/model.json');
+$scaler = readobject('./objects/scaler.json');
+$violinfolder = '~/Documents/datasets/TinySOL/Strings/Violin/ordinario/';
+$tbnfolder = '~/Documents/datasets/TinySOL/Brass/Trombone/ordinario/';
+$sources = (
+    [['label' 'string'] ['folder' $violinfolder]] 
+    ## ---
+    [['label' 'brass'] ['folder' $tbnfolder]] 
+);
+$preds = null;
+for $source in $sources do (
+    $label = getkey($source, 'label');
+    $folder = getkey($source, 'folder');
+    $files = readfolder($folder);
+    for $file in $files do (
+        $timbre = GetTimbre($file);
+        $pt = transform($scaler, $timbre);
+        $pred = predict($mlp, $pt);
+        $preds _= $pred == $label
+    ) 
+);
+$acc = float(reduce($preds, #+) / length($preds));
+print($acc, 'Accuracy:')

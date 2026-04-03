@@ -1,0 +1,17 @@
+setseed(1);
+$dataset = readobject('./objects/dataset.json');
+$labelset = readobject('./objects/labelset.json');
+$mlp = mlp(
+    @hiddenlayers 8 8 8
+    @mode 1
+    @useseed 1
+);
+## training loop
+for $i in 1...200 do fit(
+    @object $mlp
+    @xset $dataset
+    @yset $labelset
+).print('loss:');
+writeobject(
+    @object $mlp @path './objects/model.json'
+)

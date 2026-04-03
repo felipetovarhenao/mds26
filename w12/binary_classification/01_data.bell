@@ -1,0 +1,35 @@
+#(
+    This script should generate a dataset of string and brass 
+    instruments
+    The input dataset is going to be MFCC analysis for each soundfile
+    The output is a labelset with the label of either "string" or "brass"
+    We're going to write the dataset and labelset as files
+    we can reuse later
+)#
+setseed(1);
+$data = null;
+$labels = null;
+$violafolder = '~/Documents/datasets/TinySOL/Strings/Viola/ordinario/';
+$trumpetfolder = '~/Documents/datasets/TinySOL/Brass/Trumpet_C/ordinario/';
+$sources = (
+    [['label' 'string'] ['folder' $violafolder]] 
+    ## ---
+    [['label' 'brass'] ['folder' $trumpetfolder]] 
+);
+for $source in $sources do (
+    $label = getkey($source, 'label');
+    $folder = getkey($source, 'folder');
+    $files = readfolder($folder);
+    for $file in $files do (
+        $timbre = GetTimbre($file);
+        $data _= [$timbre];
+        $labels _= $label
+    ) 
+);
+$dataset = dataset($data);
+$labelset = labelset($labels);
+$scaler = stdscaler($dataset);
+$dataset = transform($scaler, $dataset);
+writeobject($dataset, './objects/dataset.json');
+writeobject($labelset, './objects/labelset.json');
+writeobject($scaler, './objects/scaler.json')

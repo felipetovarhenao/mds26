@@ -1,0 +1,51 @@
+#(
+    Build a neural network (MLP) that can learn to tell
+    whether a the first value (A) is less or greather than
+    the second value (B). 
+    If A < B then "lt"
+    If B < A then "gte"
+)#
+$xdata = null;
+$ydata = null;
+## generate some random dataset of points
+for $i in 1...100 do (
+    ## generate two values (each with mean of 0 and stddev of 1)
+    $a = randn();
+    $b = randn();
+    ## group values into a single 2D point
+    $x = [$a $b];
+    ## generate expected output as a label
+    $y = if $a < $b then 'lt' else 'gte';
+    ## append each input/output pair to data lists
+    $xdata _= $x;
+    $ydata _= $y
+);
+## create a dataset of points
+$input = dataset($xdata);
+## create a labelet of output labels
+$output = labelset($ydata);
+## initialize MLP in classification mode (mode 1)
+$network = mlp(@mode 1);
+## run training loop 50 times
+for $i in 1...50 do (
+    $loss = fit(
+        @object $network
+        @xset $input
+        @yset $output
+    )
+);
+$preds = null;
+for $i in 1...100 collect (
+    $a = randn();
+    $b = randn();
+    ## input point
+    $x = $a $b;
+    ## expected answer
+    $y = if $a < $b then 'lt' else 'gte';
+    ## predcted answer
+    $pred = predict($network, $x);
+    $preds _= $y == $pred
+);
+## compute accuracy after training
+$acc = float(reduce($preds, #+) / length($preds));
+print($acc, 'Accuracy')

@@ -1,0 +1,56 @@
+readobject = (
+    $path -> (
+        $self = 'readobject';
+        BP_FN_CHECK_ARGS($self, 'path', $path);
+        $pathinfo = BP_FN_PATHINFO($path @locate 1);
+        $ext = $pathinfo.'extension';
+        if $ext != '.json' then BP_FN_ERROR($self, 'invalid extension:' $ext) else (
+            $path = $pathinfo.'path' + $ext;
+            BP_MAXOBJ_DICT(
+                'read' $path @out 'm' 
+            );
+            $isvalid = 0;
+            for $prop in 'mlp' 'cols' 'layers' 'target' as $isvalid == 0 do $isvalid = BP_MAXOBJ_DICT(
+                'contains' $prop @out 'm' @fetch 3
+            );
+            if $isvalid == 0 then BP_FN_ERROR($self, '@object is currently empty and should be populated before writing.') else (
+                $query = BP_MAXOBJ_DICT(
+                    'get' '_alias' @out 'm' @fetch 2
+                );
+                if $query:1 == '_alias' && $query:2 != null then (
+                    $attrkeys = right(BP_MAXOBJ_DICT(
+                        'get' '_attributes' @out 'm' @fetch 2
+                    ), 1);
+                    $attrs = for $key in $attrkeys collect (
+                        $value = BP_MAXOBJ_DICT(
+                            'get' '_' + $key @out 'm' @fetch 2
+                        );
+                        [$key right($value, 1)] 
+                    );
+                    $alias = $query:2;
+                    $result = BP_MAXOBJ_DICT(
+                        'bang' @out 'm' @fetch 1
+                    );
+                    $object = BP_FN_FLUID_NEWOBJ(@alias $alias @attributes $attrs);
+                    $ref = getkey($object, 'ref');
+                    BP_FN_SANDBOX_MSG(
+                        @to $ref @message 'load' $result
+                    );
+                    if intersection($alias, 'dataset' 'labelset') != null then BP_FN_FLUID_UPDATE_SET($object) else $object
+                ) 
+            ) 
+        ) 
+    ) 
+);
+GetTimbre = (
+    $file -> (
+        ## step 1: load file as buffer
+        $buf = importaudio($file);
+        ## step 2: crop to get first 300 ms
+        $buf = setkey($buf, 'duration', 300);
+        ## step 3: analyze timbre
+        $buf = analyze($buf, mfcc());
+        ## step 4: get/return analysis results
+        getkey($buf, 'mfcc') 
+    ) 
+)
